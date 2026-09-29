@@ -251,18 +251,39 @@ header.solid .menu-toggle .bar::after, .menu-toggle[aria-expanded="true"] .bar::
   font-family:'Manrope', sans-serif; font-style:italic; font-weight:500; font-size:19px; color:var(--oliva-700);
   margin-top:8px;
 }
+/* carrusel infinito: el track tiene los logos duplicados y se desplaza -50% */
 .logos-row{
-  display:flex; flex-wrap:wrap; justify-content:center; align-items:center;
-  gap:20px 52px;
+  overflow:hidden;
+  -webkit-mask-image:linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+          mask-image:linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
 }
-.logos-row span{
-  font-family:'Manrope', sans-serif; font-weight:700; font-size:18px;
-  color:var(--oliva-400); letter-spacing:0.01em;
-  opacity:0.85; transition:opacity .2s ease, color .2s ease;
-  white-space:nowrap;
+.logos-track{
+  display:flex; align-items:center; width:max-content;
+  animation:logos-scroll 45s linear infinite;
 }
-.logos-row span:hover{opacity:1; color:var(--oliva-950);}
-@media (max-width:560px){ .logos-row{gap:16px 30px;} .logos-row span{font-size:15px;} }
+.logos-row:hover .logos-track{animation-play-state:paused;}
+/* altura por logo vía --h (en el HTML), compensada según proporción */
+.logos-track img{
+  display:block; flex:none; width:auto;
+  height:calc(var(--h, 40) * 1px);
+  margin-right:64px; /* margen en vez de gap: así el -50% del loop es exacto */
+  opacity:0.85; transition:opacity .2s ease;
+}
+.logos-track img:hover{opacity:1;}
+@keyframes logos-scroll{
+  from{transform:translateX(0);}
+  to{transform:translateX(-50%);}
+}
+@media (max-width:560px){
+  .logos-track{animation-duration:32s;}
+  .logos-track img{height:calc(var(--h, 40) * 0.75px); margin-right:40px;}
+}
+@media (prefers-reduced-motion: reduce){
+  .logos-row{-webkit-mask-image:none; mask-image:none;}
+  .logos-track{animation:none; width:auto; flex-wrap:wrap; justify-content:center; row-gap:28px;}
+  .logos-track img{margin:0 26px;}
+  .logos-track img[aria-hidden="true"]{display:none;}
+}
 
 /* ---------- SECTION HELPERS ---------- */
 section{padding:110px 0;}
